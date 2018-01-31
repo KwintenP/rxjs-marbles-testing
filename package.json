@@ -1,0 +1,52 @@
+{
+  "name": "rxjs-marbles-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KwintenP/rxjs-marbles-testing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KwintenP/rxjs-marbles-testing/issues"
+  },
+  "homepage": "https://github.com/KwintenP/rxjs-marbles-testing#readme",
+  "devDependencies": {
+    "@types/jest": "^22.1.1",
+    "jest": "^22.1.4",
+    "jest-cli": "^22.1.4",
+    "typescript": "^2.6.2"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "cobertura",
+      "lcov",
+      "json"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*spec.ts"
+    ],
+    "globals": {
+      "__TS_CONFIG__": "./tsconfig.jest.json"
+    },
+    "setupTestFrameworkScriptFile": "./test-bundle.js",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(js|ts)$": "<rootDir>/jest-preprocessor.js"
+    },
+    "testRegex": "(/src/.*\\.(spec.ts))$"
+  },
+  "dependencies": {
+    "rxjs": "^5.5.6"
+  }
+}

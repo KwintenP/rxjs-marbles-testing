@@ -20,9 +20,14 @@
     "@types/jest": "^22.1.1",
     "jest": "^22.1.4",
     "jest-cli": "^22.1.4",
+    "rxjs-marbles": "^2.3.0",
+    "ts-jest": "^22.0.2",
     "typescript": "^2.6.2"
   },
   "jest": {
+    "ts-jest": {
+      "tsConfigFile": "tsconfig.jest.json"
+    },
     "collectCoverage": true,
     "coverageReporters": [
       "cobertura",

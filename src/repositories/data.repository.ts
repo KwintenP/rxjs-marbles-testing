@@ -8,4 +8,16 @@ export class DataRepository {
             }
         });
     }
+
+    getDataWithFilter(filter: {filter: string, page: number}) {
+        return Observable.of({
+            response: () => {
+                return [{visible: true, name: 'Kwinten'}, {visible: false, name: 'Brecht'}]
+            }
+        });
+    }
+
+    getById(id) {
+        return Observable.of(id);
+    }
 }

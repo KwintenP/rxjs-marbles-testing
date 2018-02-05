@@ -6,16 +6,18 @@ import {animationFrame} from 'rxjs/scheduler/animationFrame';
 
 describe('TestService', () => {
     let testService: TestService;
-    let dataService: DataRepository;
+    let dataService;
 
     beforeEach(() => {
         dataService = {
-            getData: jest.fn()
+            getData: jest.fn(),
+            getById: jest.fn(),
+            getDataWithFilter: jest.fn(),
         };
 
         testService = new TestService(dataService);
     });
-    describe('getDataAndFilterNonVisibles', () => {
+    describe('getDataAndFilterNonVisible', () => {
         it('should filter out all the non visibles from the backend', marbles((m) => {
             const kwinten = {visible: true, name: 'Kwinten'};
             const brecht = {visible: false, name: 'Brecht'};
@@ -33,9 +35,27 @@ describe('TestService', () => {
             // @formatter:on
             (dataService.getData as Mock).mockReturnValue(data$);
 
-            const result$ = testService.getDataAndFilterNonVisibles();
+            const result$ = testService.getDataAndFilterNonVisible();
 
             m.expect(result$.do(console.log)).toBeObservable(result, values);
+        }));
+    });
+
+    describe('getById', () => {
+        it('should return a stream with data based on the id', marbles((m) => {
+            // @formatter:off
+            const id$ =             m.cold('-----a--b--------');
+            const a =               m.cold('----r|');
+            const sub1 =                  '     ^--!';
+            const sub2 =                  '        ^----!';
+            const result =                 '------------r-----';
+            // @formatter:on
+            (dataService.getById as Mock).mockReturnValue(a);
+
+            const result$ = testService.fetDataById(id$);
+
+            m.expect(result$).toBeObservable(result);
+            m.expect(a).toHaveSubscriptions([sub1, sub2]);
         }));
     });
 
@@ -51,7 +71,9 @@ describe('TestService', () => {
 
             m.expect(result$).toBeObservable(expected);
         }));
-        
+    });
+
+    describe('timing examples', () => {
         it('demonstrating debounceTime', marbles((m) => {
             // @formatter:off
             const obs1 =    m.cold('-a----b------|');

@@ -211,4 +211,17 @@ describe('service: DiyService', () => {
             m.expect(result$).toBeObservable(result, values);
         }));
     });
+
+    describe('doubleClick', () => {
+        it('should only allow double clicks within a certain time frame', marbles((m) => {
+            // @formatter:off
+            const clicks$ = m.hot('-c--c--------c-------c-c--c--------c-----c--c');
+            const result =        '----d------------------d--------------------d';
+            // @formatter:on
+
+            const result$ = service.doubleClick(clicks$, 40, m.scheduler);
+
+            m.expect(result$).toBeObservable(result, {d: ['c','c']});
+        }));
+    });
 });

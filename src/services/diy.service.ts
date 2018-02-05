@@ -4,6 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import {combineLatest} from 'rxjs/observable/combineLatest';
 import {async} from 'rxjs/scheduler/async';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {asap} from 'rxjs/scheduler/asap';
 
 export class DiyService {
 
@@ -80,14 +81,33 @@ export class DiyService {
     reduxClone(source$, items) {
         return source$
             .scan((acc, curr) => {
-                if(curr.type === 'INITIAL'){
+                if (curr.type === 'INITIAL') {
                     return acc;
-                } else if(curr.type === 'ADD') {
+                } else if (curr.type === 'ADD') {
                     return [...acc, curr.item];
-                } else if(curr.type === 'REMOVE') {
+                } else if (curr.type === 'REMOVE') {
                     return acc.filter(item => item !== curr.item);
                 }
-                return acc;
             }, items);
+    }
+
+    // use case: http://jsbin.com/yehoyen/edit?js,console,output
+    doubleClick(clicks$, debounceTime, scheduler = asap) {
+        const reset$ = new BehaviorSubject('');
+        const bufferUntil = reset$
+            .pipe(
+                switchMap(
+                    () => clicks$
+                        .scan((acc, curr) => ++acc, 0)
+                        .filter(x => x > 1)
+                        .observeOn(scheduler)
+                        .merge(clicks$.debounceTime(debounceTime, scheduler))
+                )
+            );
+
+        return clicks$
+            .buffer(bufferUntil)
+            .do(() => reset$.next(''))
+            .filter(x => x.length > 1)
     }
 }

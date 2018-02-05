@@ -20,4 +20,13 @@ export class DataRepository {
     getById(id) {
         return Observable.of(id);
     }
+
+    getStreamOfNumbers() {
+        return Observable.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    }
+
+    getStreamOfArrayWithNumbers() {
+        return Observable.of([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+
 }

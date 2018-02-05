@@ -24,13 +24,4 @@ export class TestService {
                 switchMap(id => this.dataRepository.getById(id))
             );
     }
-
-    // Passing streams to methods is not a good idea,
-    // this is just for demonstration purposes
-    filterAndPageData(filter$: Observable<string>, page$: Observable<number>) {
-        return combineLatest(filter$, page$, (filter, page) => ({filter, page}))
-            .pipe(
-                switchMap(dataFilter => this.dataRepository.getDataWithFilter(dataFilter))
-            );
-    }
 }

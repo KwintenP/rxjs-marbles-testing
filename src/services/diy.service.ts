@@ -3,6 +3,7 @@ import {debounceTime, filter, map, switchMap, tap} from 'rxjs/operators';
 import {Observable} from 'rxjs/Observable';
 import {combineLatest} from 'rxjs/observable/combineLatest';
 import {async} from 'rxjs/scheduler/async';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 export class DiyService {
 
@@ -46,6 +47,47 @@ export class DiyService {
     refreshTheData(click$: Observable<string>, swipe$: Observable<string>) {
         return click$.merge(swipe$)
             .startWith(undefined)
-            .switchMap(_ => this.dataService.getBackendData());
+            .switchMap(_ => this.dataRepository.getData());
+    }
+
+    filterOutValues() {
+        const numbers$: Observable<number> = this.dataRepository.getStreamOfNumbers();
+
+        return numbers$.filter(x => x % 2 === 0);
+    }
+
+    // TODO: Multiply all the number events by two
+    multiplyAllValuesByTwo() {
+        const numbers$: Observable<number> = this.dataRepository.getStreamOfNumbers();
+
+        return numbers$.map(x => x * 2);
+    }
+
+    // TODO: Every event is an array of numbers. Modify the event so the array only contains even numbers.
+    filterOutValuesOfArray(): Observable<Array<number>> {
+        const array$: Observable<Array<number>> = this.dataRepository.getStreamOfArrayWithNumbers();
+
+        return array$.map(arr => arr.filter(x => x % 2 === 0));
+    }
+
+    // TODO: Every event is an array of numbers. Modify the event so every number in the array is multiplied by two.
+    multiplyAllValuesByTwoOfArray(): Observable<Array<number>> {
+        const array$: Observable<Array<number>> = this.dataRepository.getStreamOfArrayWithNumbers();
+
+        return array$.map(arr => arr.map(x => x * 2));
+    }
+
+    reduxClone(source$, items) {
+        return source$
+            .scan((acc, curr) => {
+                if(curr.type === 'INITIAL'){
+                    return acc;
+                } else if(curr.type === 'ADD') {
+                    return [...acc, curr.item];
+                } else if(curr.type === 'REMOVE') {
+                    return acc.filter(item => item !== curr.item);
+                }
+                return acc;
+            }, items);
     }
 }
